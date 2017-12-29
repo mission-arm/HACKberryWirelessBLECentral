@@ -1,0 +1,157 @@
+<!doctype html>
+
+<html>
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="description" content="BlueJelly">
+      <meta name="viewport" content="width=640, maximum-scale=1.0, user-scalable=yes">
+      <title>HACKberryWirelessSensorTestWithGraph</title>
+      <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet" type="text/css">
+      <link rel="stylesheet" href="style.css">
+      <script type="text/javascript" src="bluejelly.js"></script>
+      <script type="text/javascript" src="./smoothie.js"></script>
+    </head>
+
+<body>
+    <div class="container">
+        <div class="title margin">
+            <p id="title">HACKberryWirelessSensorTestWithChart</p>
+            <p id="subtitle">センサデータのグラフを出す</p>
+        </div>
+
+        <div class="contents margin">
+            <button id="scan" class="button">Scan</button>
+            <button id="read" class="button">Read</button>
+
+            <hr>
+            <button id="startNotifications" class="button">Start Notify</button>
+            <button id="stopNotifications" class="button">Stop Notify</button>
+            <button id="reset" class="button">Reset</button>
+
+            <hr>
+            <canvas id="chart" width="500" height="320"></canvas>
+
+            <div id="device_name"> </div>
+            <div id="uuid_name"> </div>
+            <div id="data_text"> </div>
+            <div id="status"> </div>
+
+        </div>
+    </div>
+    <script>
+    // Global variables
+    var ble = new BlueJelly();
+    var ble_data = new TimeSeries();
+
+    // smoothie.js
+    function createTimeline() {
+        var chart = new SmoothieChart({
+            millisPerPixel: 20,
+            grid: {
+                fillStyle: '#ff8319',
+                strokeStyle: '#ffffff',
+                millisPerLine: 800
+            },
+            maxValue: 1024,
+            minValue: 0
+        });
+        chart.addTimeSeries(ble_data, {
+            strokeStyle: 'rgba(255, 255, 255, 1)',
+            fillStyle: 'rgba(255, 255, 255, 0.2)',
+            lineWidth: 4
+        });
+        chart.streamTo(document.getElementById("chart"), 500);
+    }
+
+    // process when loading
+    window.onload = function() {
+        // UUID Configuration
+        ble.setUUID("HbSensorUUID",
+                    "2a868b46-306e-4ae8-98fa-1389802f6bf5",
+                    "4b5c51d5-b39e-4922-ad8c-e5fbe37cb71c"
+        );
+
+        createTimeline();
+    }
+
+    // process after scan
+    ble.onScan = function (deviceName) {
+        document.getElementById('device_name').innerHTML = deviceName;
+        document.getElementById('status').innerHTML = "found device!";
+    }
+
+    // process after ConnectGATT
+    ble.onConnectGATT = function (uuid) {
+        console.log('> connected GATT!');
+
+        document.getElementById('uuid_name').innerHTML = uuid;
+        document.getElementById('status').innerHTML = "connected GATT!";
+    }
+
+    // process after read
+    ble.onRead = function (data, uuid) {
+        // get value
+        value = data.getUInt32(0);
+
+        //
+        console.log(value);
+
+        // display the value on HTML
+        document.getElementById('data_text').innerHTML = value;
+
+        document.getElementById('uuid_name').innerHTML = uuid;
+        document.getElementById('status').innerHTML = "read data";
+
+        //グラフへ反映
+        ble_data.append(new Date().getTime(), value);
+    }
+
+    // process after start notify
+    ble.onStartNotify = function (uuid) {
+        console.log('> Start Notify');
+
+        document.getElementById('uuid_name').innerHTML = uuid;
+        document.getElementById('status').innerHTML = "Started Notify";
+    }
+
+    // process after stop notify
+    ble.onStopNotify = function (uuid) {
+        console.log('> Stop Notify');
+
+        document.getElementById('uuid_name').innerHTML = uuid;
+        document.getElementById('status').innerHTML = "Stopped Notify";
+    }
+
+    // process after reset
+    ble.onReset = function() {
+        document.getElementById('device_name').innerHTML = "No Device";
+        document.getElementById('uuid_name').innerHTML = "Not Connected";
+        document.getElementById('data_text').innerHTML = "";
+        document.getElementById('status').innerHTML = "cleared";
+    }
+
+    // event when button pressed
+    document.getElementById('scan').addEventListener('click', function() {
+        ble.scan('HbSensorUUID');
+    })
+
+    document.getElementById('read').addEventListener('click', function() {
+        ble.read('HbSensorUUID');
+    })
+
+    document.getElementById('startNotifications').addEventListener('click', function() {
+          ble.startNotify('HbSensorUUID');
+    });
+
+    document.getElementById('stopNotifications').addEventListener('click', function() {
+          ble.stopNotify('HbSensorUUID');
+    });
+
+    document.getElementById('reset').addEventListener('click', function() {
+        ble.reset(); //reset is disconnect & clear
+    });
+
+    </script>
+</body>
+</html>

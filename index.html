@@ -92,7 +92,7 @@
     // process after read
     ble.onRead = function (data, uuid) {
         // get value
-        value = data.getUInt32(0);
+        value = data.getUInt16(0);
 
         //
         console.log(value);

@@ -6,237 +6,111 @@
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="description" content="BlueJelly">
       <meta name="viewport" content="width=640, maximum-scale=1.0, user-scalable=yes">
-      <title>HACKberryWirelessSensorTestWithGraph</title>
+      <title>HACKberryWirelessSensorTestWithChart</title>
       <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet" type="text/css">
       <link rel="stylesheet" href="style.css">
       <script type="text/javascript" src="bluejelly.js"></script>
-      <script type="text/javascript" src="./smoothie.js"></script>
+      <script type="text/javascript" src="smoothie.js"></script>
     </head>
 
 <body>
     <div class="container">
         <div class="title margin">
-            <p id="title">HACKberryWirelessSensorTestWithChart</p>
-            <p id="subtitle">センサデータのグラフを出す</p>
+            <p id="title">HACKberry Wireless BLE Test</p>
         </div>
 
         <div class="contents margin">
-            <button id="scan" class="button">Scan Sensor</button>
-            <button id="startNotifications" class="button">Start Notify</button>
-            <button id="stopNotifications" class="button">Stop Notify</button>
-            <button id="reset" class="button">Reset</button>
+            <button id="sensorScan" class="button">Scan Sensor</button>
+            <button id="sensorStartNortifications" class="button">Start Notify</button>
+            <button id="sensorStopNortifications" class="button">Stop Notify</button>
+            <button id="sensorReset" class="button">Reset</button>
 
             <hr>
-            <canvas id="chart" width="500" height="320"></canvas>
+            <canvas id="sensorChart" width="500" height="320"></canvas>
 
-            <div id="device_name"> </div>
-            <div id="uuid_name"> </div>
-            <div id="data_text"> </div>
-            <div id="status"> </div>
+            <div id="sensorDeviceName"> DeviceName: </div>
+            <div id="sensorSensorUUIDName"> UUID: </div>
+            <div id="sensorSensorDataText"> SensorData: </div>
+            <div id="sensorConnection"> Connection: </div>
+            <div id="sensorConnectionStatus"> GATT: </div>
         </div>
 
         <div class="contents margin">
-            <button id="scan_hand" class="button">Scan Hand</button>
-            <button id="read_hand_battery" class="button">Read Battery</button>
-            <input id="write_value" type="text" size="3" value="100">
-            <button id="write_hand" class="button">Write</button>
-            <button id="startSync" class="button">Sync</button>
-            <button id="stopSync" class="button">Stop</button>
-            <button id="reset_hand" class="button">Reset</button>
+            <button id="handScan" class="button">Scan Hand</button>
+            <button id="handBatteryRead" class="button">Read Battery</button>
+            <button id="handdHandStatRead" class="button">Read Hand Status</button>
+            <hr>
+            <input id="handTargetValue" type="text" size="3" value="100">
+            <button id="handTargetWrite" class="button">Write</button>
+            <hr>
+            <button id="handTargetStartSync" class="button">Sync</button>
+            <button id="handTargetStopSync" class="button">Stop</button>
+            <button id="handReset" class="button">Reset</button>
 
             <hr>
-            <div id="device_name_hand"> </div>
-            <div id="uuid_name_hand_written"> </div>
-            <div id="writtendata_text_hand"> </div>
-            <div id="uuid_name_hand_battery"> </div>
-            <div id="batterydata_text_hand"> </div>
-            <div id="uuid_name_hand_handstat"> </div>
-            <div id="handstatdata_text_hand"> </div>
-            <div id="status_hand"> </div>
+            <div id="handDeviceName"> DeviceName: </div>
+            <div id="handUUIDNameTarget"> TargetUUID: </div>
+            <div id="handTargetDataText"> TargetData: </div>
+            <div id="handUUIDNameBattery"> BatteryUUID: </div>
+            <div id="handBatteryDataText"> BatteryData: </div>
+            <div id="handUUIDNameHandStat"> HandStatUUID: </div>
+            <div id="handHandStatDataText"> HandStatData: </div>
+            <div id="handConnection"> Connection: </div>
+            <div id="handConnectionStatusTarget"> GATT Target: </div>
+            <div id="handConnectionStatusBattery"> GATT Battery: </div>
+            <div id="handConnectionStatusHandStat"> GATT HandStat: </div>
         </div>
     </div>
+
+    <script type="text/javascript" src="HACKberryWirelessBLECentral.js"></script>
     <script>
-    // Global variables
-    var ble_sensor = new BlueJelly();
-    var ble_hand = new BlueJelly();
-    var ble_data = new TimeSeries();
+    /*
+     * Events when buttons pressed
+     */
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById('sensorScan').addEventListener('click', function() {
+            bleSensor.scan('HbSensorSensorUUID');
+        })
 
-    //
-
-    // smoothie.js
-    function createTimeline() {
-        var chart = new SmoothieChart({
-            millisPerPixel: 20,
-            grid: {
-                fillStyle: '#ff8319',
-                strokeStyle: '#ffffff',
-                millisPerLine: 800
-            },
-            maxValue: 1024,
-            minValue: 0
+        document.getElementById('sensorStartNortifications').addEventListener('click', function() {
+            bleSensor.startNotify('HbSensorSensorUUID');
         });
-        chart.addTimeSeries(ble_data, {
-            strokeStyle: 'rgba(255, 255, 255, 1)',
-            fillStyle: 'rgba(255, 255, 255, 0.2)',
-            lineWidth: 4
+
+        document.getElementById('sensorStopNortifications').addEventListener('click', function() {
+            bleSensor.stopNotify('HbSensorSensorUUID');
         });
-        chart.streamTo(document.getElementById("chart"), 500);
-    }
 
-    // process when loading
-    window.onload = function() {
-        // UUID Configuration
-        ble_sensor.setUUID("HbSensorUUID",
-                    "2a868b46-306e-4ae8-98fa-1389802f6bf5",
-                    "4b5c51d5-b39e-4922-ad8c-e5fbe37cb71c"
-        );
-        ble_hand.setUUID("HbHandSensorUUID",
-                    "b436a215-cf24-4ae4-b10d-3d842fec6bd2",
-                    "bc25d7b5-d92f-4d45-bdaa-cc0b04b81511"
-        );
-        ble_hand.setUUID("HbHandBatteryUUID",
-                    "b436a215-cf24-4ae4-b10d-3d842fec6bd2",
-                    "8826547a-eb87-43ec-9a6c-68de15c46ad9"
-        );
-        ble_hand.setUUID("HbHandHandStatUUID",
-                    "b436a215-cf24-4ae4-b10d-3d842fec6bd2",
-                    "3a87338a-c109-4ff6-9694-1975f33eb635"
-        );
+        document.getElementById('sensorReset').addEventListener('click', function() {
+            bleSensor.reset(); //reset is disconnect & clear
+        });
 
-        ble_hand.isSync = 0;
+        document.getElementById('handScan').addEventListener('click', function() {
+            bleHand.scan('HbHandTargetUUID');
+        });
 
-        createTimeline();
-    }
+        document.getElementById('handBatteryRead').addEventListener('click', function() {
+            bleHand.read('HbHandBatteryUUID');
+        });
 
-    // process after scan
-    ble_sensor.onScan = function (deviceName) {
-        document.getElementById('device_name').innerHTML = deviceName;
-        document.getElementById('status').innerHTML = "found device!";
-    }
+        document.getElementById('handdHandStatRead').addEventListener('click', function() {
+            bleHand.read('HbHandHandStatUUID');
+        })
 
-    // process after ConnectGATT
-    ble_sensor.onConnectGATT = function (uuid) {
-        console.log('> connected GATT!');
+        document.getElementById('handTargetStartSync').addEventListener('click', function() {
+            //bleHand.isSync = 1;
+        });
 
-        document.getElementById('uuid_name').innerHTML = uuid;
-        document.getElementById('status').innerHTML = "connected GATT!";
-    }
+        document.getElementById('handTargetStopSync').addEventListener('click', function() {
+            //bleHand.isSync = 0;
+        });
 
-    // process after read
-    ble_sensor.onRead = function (data, uuid) {
-        // get value
-        value = data.getUint16(0);
+        document.getElementById('handReset').addEventListener('click', function() {
+            bleHand.reset();
+        });
 
-        //
-        console.log(value);
-
-        // display the value on HTML
-        document.getElementById('data_text').innerHTML = value;
-        document.getElementById('uuid_name').innerHTML = uuid;
-        document.getElementById('status').innerHTML = "read data";
-
-        //グラフへ反映
-        ble_data.append(new Date().getTime(), value);
-    }
-
-    // process after start notify
-    ble_sensor.onStartNotify = function (uuid) {
-        console.log('> Start Notify');
-
-        document.getElementById('uuid_name').innerHTML = uuid;
-        document.getElementById('status').innerHTML = "Started Notify";
-    }
-
-    // process after stop notify
-    ble_sensor.onStopNotify = function (uuid) {
-        console.log('> Stop Notify');
-
-        document.getElementById('uuid_name').innerHTML = uuid;
-        document.getElementById('status').innerHTML = "Stopped Notify";
-    }
-
-    // process after reset
-    ble_sensor.onReset = function() {
-        document.getElementById('device_name').innerHTML = "No Device";
-        document.getElementById('uuid_name').innerHTML = "Not Connected";
-        document.getElementById('data_text').innerHTML = "";
-        document.getElementById('status').innerHTML = "cleared";
-    }
-
-    ble_hand.onScan = function (devicename) {
-        document.getElementById('device_name_hand').innerHTML = devicename;
-        document.getElementById('status_hand').innerHTML = "found device!";
-    }
-
-    ble_hand.onRead = function(data, uuid) {
-        if (uuid == "HbHandBatteryUUID") {
-            value = data.getInt16(0);
-            document.getElementById('batterydata_text_hand').innerHTML = value;
-            document.getElementById('uuid_name_hand_battery').innerHTML = uuid;
-        } else if (uuid == "HbHandHandStatUUID") {
-            value = data.getInt8(0);
-            document.getElementById('handstatdata_text_hand').innerHTML = value;
-            document.getElementById('uuid_name_hand_handstat').innerHTML = uuid;
-        }
-    }
-
-    ble_hand.onConnectGATT = function (uuid) {
-        document.getElementById('status_hand').innerHTML = "connected GATT!";
-    }
-
-    ble_hand.onWrite = function(uuid) {
-    }
-
-    ble_hand.onReset = function() {
-        document.getElementById('device_name_hand').innerHTML = "No Device";
-        document.getElementById('uuid_name_hand_written').innerHTML = "Not Connected";
-        document.getElementById('uuid_name_hand_battery').innerHTML = "Not Connected";
-        document.getElementById('uuid_name_hand_handstat').innerHTML = "Not Connected";
-        document.getElementById('writtendata_text_hand').innerHTML = "";
-        document.getElementById('batterydata_text_hand').innerHTML = "";
-        document.getElementById('handstatdata_text_hand').innerHTML = "";
-        document.getElementById('status_hand').innerHTML = "cleared";
-    }
-
-    // event when button pressed
-    document.getElementById('scan').addEventListener('click', function() {
-        ble_sensor.scan('HbSensorUUID');
-    })
-
-    document.getElementById('startNotifications').addEventListener('click', function() {
-          ble_sensor.startNotify('HbSensorUUID');
-    });
-
-    document.getElementById('stopNotifications').addEventListener('click', function() {
-          ble_sensor.stopNotify('HbSensorUUID');
-    });
-
-    document.getElementById('reset').addEventListener('click', function() {
-        ble_sensor.reset(); //reset is disconnect & clear
-    });
-
-    document.getElementById('scan_had').addEventListener('click', function() {
-        ble_hand.scan('HbHandSensorUUID');
-    });
-
-    document.getElementById('read_hand_battery').addEventListener('click', function() {
-        ble_hand.read('HbHandBatteryUUID');
-    });
-
-    document.getElementById('startSync').addEventListener('click', function() {
-        ble_hand.isSync = 1;
-    });
-
-    document.getElementById('stopSync').addEventListener('click', function() {
-        ble_hand.isSync = 0;
-    });
-
-    document.getElementById('reset_hand').addEventListener('click', function() {
-        ble_hand.reset();
-    });
-
-    document.getElementById('write_hand').addEventListener('click', function() {
-        ble_hand.write('HbHandSensorUUID', document.getElementById('write_value').value);
+        document.getElementById('handTargetWrite').addEventListener('click', function() {
+            bleHand.write('HbHandTargetUUID');
+        })
     })
 
     </script>

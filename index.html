@@ -98,10 +98,12 @@
 
         document.getElementById('handTargetStartSync').addEventListener('click', function() {
             //bleHand.isSync = 1;
+            startHandSync();
         });
 
         document.getElementById('handTargetStopSync').addEventListener('click', function() {
             //bleHand.isSync = 0;
+            stopHandSync();
         });
 
         document.getElementById('handReset').addEventListener('click', function() {
@@ -109,8 +111,10 @@
         });
 
         document.getElementById('handTargetWrite').addEventListener('click', function() {
-            bleHand.write('HbHandTargetUUID');
+            //bleHand.write('HbHandTargetUUID', TargetValue);
+            TargetValue = document.getElementById('handTargetValue').value;
         })
+
     })
 
     </script>

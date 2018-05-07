@@ -17,6 +17,7 @@ var dataSensor = new TimeSeries();
 // Global variables
 var isHandTargetSync;
 var TargetValue;
+var TestTargetValue;
 
 // Timeline
 function createSensorTimeline() {
@@ -36,6 +37,19 @@ function createSensorTimeline() {
       lineWidth: 4
   });
   chart.streamTo(document.getElementById("sensorChart"), 500);
+}
+
+var handTimerID;
+
+//
+function startHandSync() {
+    console.log('BLEHand > Started Writing Tiemr.')
+    handTimerID = setInterval( bleHand.write('HbHandTargetUUID', TargetValue), 100);
+}
+
+function stopHandSync() {
+    console.log('BLEHand > Stopped Writing Tiemr.')
+    clearInterval(handTimerID);
 }
 
 // Process when loading HTML file
@@ -153,7 +167,7 @@ bleHand.onScan = function (devicename) {
 }
 
 bleHand.onConnectGATT = function (uuid) {
-    console.log('BLEHand > Connected GATT.');
+    console.log('BLEHand > Connected GATT. uuid=' + uuid);
 
     switch(uuid) {
         case "HbHandTargetUUID":
@@ -200,7 +214,7 @@ bleHand.onRead = function(data, uuid) {
 
 
 bleHand.onWrite = function(uuid) {
-    console.log('BLEHand > Write a data.');;
+    console.log('BLEHand > Write a data.');
 
     switch (uuid) {
         case "HbHandTargetUUID":

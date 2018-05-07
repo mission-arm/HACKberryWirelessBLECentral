@@ -41,14 +41,19 @@ function createSensorTimeline() {
 
 var handTimerID;
 
+var publishSensor = function () {
+    console.log('bleHand > publishing....');
+    bleHand.write('HbHandTargetUUID', TargetValue);
+}
+
 //
 function startHandSync() {
-    console.log('BLEHand > Started Writing Tiemr.')
-    handTimerID = setInterval( bleHand.write('HbHandTargetUUID', TargetValue), 100);
+    console.log('BLEHand > Started Writing Tiemr.');
+    handTimerID = setInterval( publishSensor, 100);
 }
 
 function stopHandSync() {
-    console.log('BLEHand > Stopped Writing Tiemr.')
+    console.log('BLEHand > Stopped Writing Tiemr.');
     clearInterval(handTimerID);
 }
 

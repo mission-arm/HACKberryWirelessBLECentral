@@ -194,7 +194,7 @@ bleHand.onConnectGATT = function (uuid) {
 }
 
 bleHand.onRead = function(data, uuid) {
-    console.log('BLEHand > Read data.');
+    console.log('BLEHand > Read data.' + String(data));
 
     var value;
 

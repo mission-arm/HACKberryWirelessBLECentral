@@ -204,13 +204,13 @@ bleHand.onRead = function(data, uuid) {
             break;
 
         case "HbHandBatteryUUID":
-            value = data.getUInt16(0);
+            value = data.getUint16(0);
             document.getElementById('handBatteryDataText').innerHTML = "BatteryData: " + String(value);
             document.getElementById('handConnectionStatusBattery').innerHTML = "GATT Battery: " + "Read a data.";
             break;
 
         case "HbHandHandStatUUID":
-            value = data.getUInt8(0);
+            value = data.getUint8(0);
             document.getElementById('handHandStatDataText').innerHTML = "HandStatData: " + String(value);
             document.getElementById('handConnectionStatusHandStat').innerHTML = "GATT HandStat: " + "Read a data.";
             break;

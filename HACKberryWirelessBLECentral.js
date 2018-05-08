@@ -225,6 +225,7 @@ bleHand.onWrite = function(uuid) {
         case "HbHandTargetUUID":
             document.getElementById('handTargetDataText').innerHTML = "TargetData: " + String(TargetValue);
             document.getElementById('handConnectionStatusTarget').innerHTML = "GATT Target: " + "Sent a data.";
+            break;
 
         case "HbHandBatteryUUID":
             console.log("BLEHand > The central device sent a data to Battery GATT. Something goes wrong.");

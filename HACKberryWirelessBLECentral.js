@@ -122,7 +122,7 @@ bleSensor.onRead = function (data, uuid) {
 }
 
 bleSensor.onWrite = function (uuid) {
-    console.log('BLESensor > Write data.')
+    console.log('BLESensor > Write data.');
 }
 
 bleSensor.onStartNotify = function (uuid) {
@@ -204,13 +204,13 @@ bleHand.onRead = function(data, uuid) {
             break;
 
         case "HbHandBatteryUUID":
-            value = data.getInt16(0);
+            value = data.getUInt16(0);
             document.getElementById('handBatteryDataText').innerHTML = "BatteryData: " + String(value);
             document.getElementById('handConnectionStatusBattery').innerHTML = "GATT Battery: " + "Read a data.";
             break;
 
         case "HbHandHandStatUUID":
-            value = data.getInt16(0);
+            value = data.getUInt8(0);
             document.getElementById('handHandStatDataText').innerHTML = "HandStatData: " + String(value);
             document.getElementById('handConnectionStatusHandStat').innerHTML = "GATT HandStat: " + "Read a data.";
             break;

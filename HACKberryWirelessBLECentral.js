@@ -136,7 +136,7 @@ bleSensor.onRead = function (data, uuid) {
     console.log('BLESensor > Read data.');
 
     // get value
-    var value = data.getUint16(0);
+    var value = parseInt( data.getUint8(0) ) * 16 + parseInt( data.getUint8(1) );
     TargetValue = value;
     console.log('BLESensor > Read data' );
     console.log('BLESensor >> data byte length ' + String(data.byteLength));

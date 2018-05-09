@@ -69,6 +69,7 @@ function stopHandSync() {
     console.log('BLEHand > Stopped Writing Tiemr.');
     if ( handTimerID != null)
         clearInterval(handTimerID);
+    handTimerID = null;
 }
 
 function startSensorTester() {
@@ -81,6 +82,7 @@ function stopSensorTester() {
     console.log('blehand > sensor tester stoppted');
     if ( stTimerID != null)
         clearInterval(stTimerID);
+    stTimerID = null;
 }
 
 

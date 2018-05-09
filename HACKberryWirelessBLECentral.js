@@ -72,7 +72,7 @@ function stopHandSync() {
 
 function startSensorTester() {
     console.log('blehand > sensor tester started');
-    stTimerID = setInterval( sensorTesterFlag, 10);
+    stTimerID = setInterval( sensorTester, 10);
 }
 
 function stopSensorTester() {

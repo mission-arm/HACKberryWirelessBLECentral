@@ -70,7 +70,7 @@ var chartSync = function() {
 }
 
 function startChartSync() {
-    cnosole.log('BLEHand > started chart sync');
+    console.log('BLEHand > started chart sync');
     if ( chartTimerID == null )
         chartTimerID = setInterval(chartSync,100);
 }

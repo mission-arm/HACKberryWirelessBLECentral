@@ -132,9 +132,12 @@ bleSensor.onRead = function (data, uuid) {
     // get value
     var value = data.getUint16(0);
     TargetValue = value;
-    console.log('BLESensor > Read data = ' + String(value) );
+    console.log('BLESensor > Read data' );
     console.log('BLESensor >> data byte length ' + String(data.byteLength));
     console.log('BLESensor >> data byte offset ' + String(data.byteOffset));
+    for(var i=0; i<data.byteLength; i++) {
+        console.log('BLESensor >> ' + (i + 1) + ' th byte is ' + data.getUint8(i) + ' in uint8')
+    }
 
     // display the value on HTML
     document.getElementById('sensorSensorDataText').innerHTML = "SensorData: " + String(value);
@@ -217,12 +220,16 @@ bleHand.onConnectGATT = function (uuid) {
 }
 
 bleHand.onRead = function(data, uuid) {
-    console.log('BLEHand > Read data.' + String(data));
 
     var value;
 
-    console.log('BLEHand >> data byte length ' + String(data.byteLength));
-    console.log('BLEHand >> data byte offset ' + String(data.byteOffset));
+    console.log('BLESensor > Read data' );
+    console.log('BLESensor >> data byte length ' + String(data.byteLength));
+    console.log('BLESensor >> data byte offset ' + String(data.byteOffset));
+    for(var i=0; i<data.byteLength; i++) {
+        console.log('BLESensor >> ' + (i + 1) + ' th byte is ' + data.getUint8(i) + ' in uint8')
+    }
+    console.log('BLESensor >> data byte offset ' + String(data.byteOffset));
 
     switch (uuid) {
         case "HbHandTargetUUID":

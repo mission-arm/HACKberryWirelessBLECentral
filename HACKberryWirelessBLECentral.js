@@ -38,8 +38,8 @@ function createSensorTimeline() {
   chart.streamTo(document.getElementById("sensorChart"), 500);
 }
 
-var handTimerID;
-var stTimerID;
+var handTimerID = null;
+var stTimerID = null;
 var sensorTesterFlag = 1;
 
 var publishSensor = function () {
@@ -61,22 +61,26 @@ var sensorTester = function () {
 //
 function startHandSync() {
     console.log('BLEHand > Started Writing Tiemr.');
-    handTimerID = setInterval( publishSensor, 10);
+    if ( handTimerID == null)
+        handTimerID = setInterval( publishSensor, 10);
 }
 
 function stopHandSync() {
     console.log('BLEHand > Stopped Writing Tiemr.');
-    clearInterval(handTimerID);
+    if ( handTimerID != null)
+        clearInterval(handTimerID);
 }
 
 function startSensorTester() {
     console.log('blehand > sensor tester started');
-    stTimerID = setInterval( sensorTester, 10);
+    if ( stTimerID == null)
+        stTimerID = setInterval( sensorTester, 10);
 }
 
 function stopSensorTester() {
     console.log('blehand > sensor tester stoppted');
-    clearInterval(stTimerID);
+    if ( stTimerID != null)
+        clearInterval(stTimerID);
 }
 
 

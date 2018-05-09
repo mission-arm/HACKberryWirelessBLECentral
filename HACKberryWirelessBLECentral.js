@@ -44,7 +44,7 @@ var sensorTesterFlag = 1;
 
 var publishSensor = function () {
     console.log('bleHand > publishing....');
-    bleHand.write('HbHandTargetUUID', TargetValue);
+    bleHand.write('HbHandTargetUUID', parseInt(TargetValue));
 }
 
 var sensorTester = function () {
@@ -61,7 +61,7 @@ var sensorTester = function () {
 //
 function startHandSync() {
     console.log('BLEHand > Started Writing Tiemr.');
-    handTimerID = setInterval( publishSensor, 100);
+    handTimerID = setInterval( publishSensor, 10);
 }
 
 function stopHandSync() {

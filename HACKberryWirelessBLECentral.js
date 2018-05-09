@@ -55,8 +55,8 @@ var sensorTester = function () {
     } else if ( TargetValue < 100 ) {
         sensorTesterFlag = 1;
     }
-
-    TargetValue += sensorTesterFlag * 10;
+    TargetValue = sensorTesterFlag * 10 + TargetValue;
+    console.log("blehand > sensortester TargetValue is " + String(TargetValue));
     dataSensor.append(new Date().getTime(), TargetValue);
 }
 //
@@ -136,6 +136,8 @@ bleSensor.onRead = function (data, uuid) {
     var value = data.getUint16(0);
     TargetValue = value;
     console.log('BLESensor > Read data = ' + String(value) );
+    console.log('BLESensor >> data byte length ' + String(data.byteLength));
+    console.log('BLESensor >> data byte offset ' + String(data.byteOffset));
 
     // display the value on HTML
     document.getElementById('sensorSensorDataText').innerHTML = "SensorData: " + String(value);
@@ -221,6 +223,9 @@ bleHand.onRead = function(data, uuid) {
     console.log('BLEHand > Read data.' + String(data));
 
     var value;
+
+    console.log('BLEHand >> data byte length ' + String(data.byteLength));
+    console.log('BLEHand >> data byte offset ' + String(data.byteOffset));
 
     switch (uuid) {
         case "HbHandTargetUUID":

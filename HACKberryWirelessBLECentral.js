@@ -15,9 +15,8 @@ var bleHand    = new BlueJelly();
 var dataSensor = new TimeSeries();
 
 // Global variables
-var isHandTargetSync;
-var TargetValue;
-var TestTargetValue;
+var TargetValue = 0;
+var TestTargetValue = 0;
 
 // Timeline
 function createSensorTimeline() {
@@ -100,8 +99,6 @@ window.onload = function() {
               "b436a215-cf24-4ae4-b10d-3d842fec6bd2",
               "3a87338a-c109-4ff6-9694-1975f33eb635"
   );
-
-  isHandTargetSync = false;
 
   createSensorTimeline();
 }

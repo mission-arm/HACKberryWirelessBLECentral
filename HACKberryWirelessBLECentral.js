@@ -44,7 +44,7 @@ var sensorTesterFlag = 1;
 
 var publishSensor = function () {
     console.log('bleHand > publishing....');
-    bleHand.write('HbHandTargetUUID', parseInt(TargetValue));
+    bleHand.write('HbHandTargetUUID', String(TargetValue));
 }
 
 var sensorTester = function () {
@@ -237,7 +237,8 @@ bleHand.onRead = function(data, uuid) {
             break;
 
         case "HbHandBatteryUUID":
-            value = data.getUint16(0);
+            // value = data.getUint16(0);
+            value = parseInt( data.getUint8(0) ) * 16 + parseInt( data.getUint8(1) );
             document.getElementById('handBatteryDataText').innerHTML = "BatteryData: " + String(value);
             document.getElementById('handConnectionStatusBattery').innerHTML = "GATT Battery: " + "Read a data.";
             break;

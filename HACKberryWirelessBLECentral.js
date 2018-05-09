@@ -16,6 +16,7 @@ var dataSensor = new TimeSeries();
 
 // Global variables
 var TargetValue = 0;
+var SyncFlag = true;
 var TestTargetValue = 0;
 
 // Timeline
@@ -40,6 +41,7 @@ function createSensorTimeline() {
 
 var handTimerID = null;
 var stTimerID = null;
+var chartTimerID = null;
 var sensorTesterFlag = 1;
 
 var publishSensor = function () {
@@ -55,10 +57,31 @@ var sensorTester = function () {
         sensorTesterFlag = 1;
     }
     TargetValue = parseInt(sensorTesterFlag * 10) + parseInt(TargetValue);
+    SyncFlag = true;
     console.log("blehand > sensortester TargetValue is " + String(TargetValue));
-    dataSensor.append(new Date().getTime(), TargetValue);
 }
-//
+
+var chartSync = function() {
+    console.log('BLEHand > syncing...');
+    if ( SyncFlag )
+        dataSensor.append(new Date().getTime(), TargetValue);
+    else
+        dataSensor.append(new Date().getTime(), 0);
+}
+
+function startChartSync() {
+    cnosole.log('BLEHand > started chart sync');
+    if ( chartTimerID == null )
+        chartTimerID = setInterval(chartSync,100);
+}
+
+function stopChartSync() {
+    console.log('BLEHand > stopped chart sync')
+    if ( chartTimerID != null )
+        clearInterval(chartTimerID);
+    chartTimerID = null;
+}
+
 function startHandSync() {
     console.log('BLEHand > Started Writing Tiemr.');
     if ( handTimerID == null)
@@ -136,13 +159,13 @@ bleSensor.onRead = function (data, uuid) {
     console.log('BLESensor > Read data.');
 
     // get value
-    var value = parseInt( data.getUint8(0) ) * 16 + parseInt( data.getUint8(1) );
+    var value = parseInt( data.getUint8(0) ) * 256 + parseInt( data.getUint8(1) );
     TargetValue = value;
     console.log('BLESensor > Read data' );
     console.log('BLESensor >> data byte length ' + String(data.byteLength));
     console.log('BLESensor >> data byte offset ' + String(data.byteOffset));
     for(var i=0; i<data.byteLength; i++) {
-        console.log('BLESensor >> ' + (i + 1) + ' th byte is ' + data.getUint8(i) + ' in uint8')
+        console.log('BLESensor >> ' + (i + 1) + ' th byte is ' + data.getUint8(i) + ' in uint8');
     }
 
     // display the value on HTML
@@ -150,7 +173,7 @@ bleSensor.onRead = function (data, uuid) {
     document.getElementById('sensorConnectionStatus').innerHTML = "GATT: " + "Read a data";
 
     //グラフへ反映
-    dataSensor.append(new Date().getTime(), value);
+    //dataSensor.append(new Date().getTime(), value);
 }
 
 bleSensor.onWrite = function (uuid) {

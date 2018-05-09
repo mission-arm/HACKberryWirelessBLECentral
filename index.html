@@ -24,6 +24,9 @@
             <button id="sensorStartNortifications" class="button">Start Notify</button>
             <button id="sensorStopNortifications" class="button">Stop Notify</button>
             <button id="sensorReset" class="button">Reset</button>
+            <hr>
+            <button id="startChartSync" class="button">Sync</button>
+            <button id="stopChartSync" class="button">Stop</button>
 
             <hr>
             <canvas id="sensorChart" width="500" height="320"></canvas>
@@ -46,7 +49,7 @@
             <button id="handTargetStartSync" class="button">Sync</button>
             <button id="handTargetStopSync" class="button">Stop</button>
             <button id="handReset" class="button">Reset</button>
-            <br>
+            <hr>
             <button id="handStartSensorTester" class="button">Start ST</button>
             <button id="handStopSensorTester" class="button">Stop ST</button>
 
@@ -71,6 +74,14 @@
      * Events when buttons pressed
      */
     document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById('startChartSync').addEventListener('click', function() {
+            startChartSync();
+        })
+
+        document.getElementById('stopChartSync').addEventListener('click', function() {
+            stopChartSync();
+        })
+
         document.getElementById('sensorScan').addEventListener('click', function() {
             bleSensor.scan('HbSensorSensorUUID');
         })

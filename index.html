@@ -46,6 +46,9 @@
             <button id="handTargetStartSync" class="button">Sync</button>
             <button id="handTargetStopSync" class="button">Stop</button>
             <button id="handReset" class="button">Reset</button>
+            <br>
+            <button id="handStartSensorTester" class="button">Start ST</button>
+            <button id="handStopSensorTester" class="button">Stop ST</button>
 
             <hr>
             <div id="handDeviceName"> DeviceName: </div>
@@ -116,6 +119,14 @@
             TargetValue = document.getElementById('handTargetValue').value;
             bleHand.write('HbHandTargetUUID', TargetValue);
         })
+
+        document.getElementById('handStarSensorTester').addEventListener('click', function(){
+            startSensorTester()
+        });
+
+        document.getElementById('handStopSensorTester').addEventListener('click', function() {
+            stopSensorTester();
+        });
 
     })
 

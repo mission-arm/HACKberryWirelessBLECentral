@@ -40,12 +40,25 @@ function createSensorTimeline() {
 }
 
 var handTimerID;
+var stTimerID;
+var sensorTesterFlag = 1;
 
 var publishSensor = function () {
     console.log('bleHand > publishing....');
     bleHand.write('HbHandTargetUUID', TargetValue);
 }
 
+var sensorTester = function () {
+    console.log("blehand > sensortester");
+    if ( TargetValue > 1024 ) {
+        sensorTesterFlag = -1;
+    } else if ( TargetValue < 100 ) {
+        sensorTesterFlag = 1;
+    }
+
+    TargetValue += sensorTesterFlag * 10;
+    dataSensor.append(new Date().getTime(), TargetValue);
+}
 //
 function startHandSync() {
     console.log('BLEHand > Started Writing Tiemr.');
@@ -56,6 +69,17 @@ function stopHandSync() {
     console.log('BLEHand > Stopped Writing Tiemr.');
     clearInterval(handTimerID);
 }
+
+function startSensorTester() {
+    console.log('blehand > sensor tester started');
+    stTimerID = setInterval( sensorTesterFlag, 10);
+}
+
+function stopSensorTester() {
+    console.log('blehand > sensor tester stoppted');
+    clearInterval(stTimerID);
+}
+
 
 // Process when loading HTML file
 window.onload = function() {

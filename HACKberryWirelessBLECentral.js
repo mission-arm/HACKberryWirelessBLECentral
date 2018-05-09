@@ -62,7 +62,7 @@ var sensorTester = function () {
 function startHandSync() {
     console.log('BLEHand > Started Writing Tiemr.');
     if ( handTimerID == null)
-        handTimerID = setInterval( publishSensor, 10);
+        handTimerID = setInterval( publishSensor, 100);
 }
 
 function stopHandSync() {
@@ -74,7 +74,7 @@ function stopHandSync() {
 function startSensorTester() {
     console.log('blehand > sensor tester started');
     if ( stTimerID == null)
-        stTimerID = setInterval( sensorTester, 10);
+        stTimerID = setInterval( sensorTester, 100);
 }
 
 function stopSensorTester() {

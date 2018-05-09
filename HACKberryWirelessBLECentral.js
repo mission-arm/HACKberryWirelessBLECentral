@@ -55,7 +55,7 @@ var sensorTester = function () {
     } else if ( TargetValue < 100 ) {
         sensorTesterFlag = 1;
     }
-    TargetValue = sensorTesterFlag * 10 + TargetValue;
+    TargetValue = parseInt(sensorTesterFlag * 10) + parseInt(TargetValue);
     console.log("blehand > sensortester TargetValue is " + String(TargetValue));
     dataSensor.append(new Date().getTime(), TargetValue);
 }
